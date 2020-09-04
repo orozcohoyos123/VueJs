@@ -1,0 +1,33 @@
+<script src="vue.js"></script>
+<link rel="stylesheet" href="style.css" />
+
+<div id="app">
+  <div
+    class="demo"
+    @click="attachedRed = !attachedRed"
+    :class="cssClasses"
+  ></div>
+  <div
+    class="demo"
+    @click="attachedRed = !attachedRed"
+    :class="cssClasses"
+  ></div>
+  <div class="demo"></div>
+</div>
+
+<script>
+  new Vue({
+    el: "#app",
+    data: {
+      attachedRed: false,
+    },
+    computed: {
+      cssClasses: function(){
+        return {
+          red: this.attachedRed,
+          blue: !this.attachedRed
+        }
+      }
+    },
+  });
+</script>

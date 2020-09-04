@@ -1,0 +1,48 @@
+<script src="vue.js"></script>
+<link rel="stylesheet" href="style.css" />
+
+<div id="app">
+  <button @click="timer()">Comenzar</button>
+  <br />
+  <div class="demo" :style="{'backgroundImage': color, width: width}"></div>
+</div>
+
+<script>
+  new Vue({
+    el: "#app",
+    data: {
+      color: "gray",
+      width: 0,
+      start: false,
+      progress: 0,
+    },
+    watch: {
+      progress: function () {
+        var vm = this;
+        setTimeout(() => {
+          if (this.progress <= 100 && this.start) {
+            //this.background = this.color;
+            this.width = this.progress + "%";
+            this.progress++;
+            this.color = "linear-gradient(" + this.random(0, 360) + "deg, rgba(" + this.random(1, 255) + "," + this.random(1, 255) + "," + this.random(0, 255) + ",1) 0%, rgba(" + this.random(1, 255) + "," + this.random(1, 255) + "," + this.random(1, 255) + ",1) " + this.random(1, 100) + "%, rgba(" + this.random(1, 255) + "," + this.random(1, 255) + "," + this.random(1, 255) + ",1) 100%)";
+          } 
+          else{
+            this.progress = 0;
+            this.start = false;
+          }
+        }, 100);
+      },
+    },
+    methods: {
+      timer: function(){
+        this.start = !this.start;
+
+        if(this.progress == 0)
+          this.progress = 1;        
+      },
+      random: function (min, max) {
+         return Math.floor(Math.random() * (max - min + 1)) + min;
+      },
+    },
+  });
+</script>

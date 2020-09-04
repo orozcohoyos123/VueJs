@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>VueJS</title>
+    <link rel="stylesheet" href="">
+    <script src="vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <h1 v-once>{{ greeting }}</h1>
+        <p>{{ greeting }} <a v-bind:href="link">Google</a></p>
+        <p v-html="dynamicLink"></p>
+        <input type="text" v-on:input="changeGreeting"></input>
+        <button v-on:click="increase(2, $event)">Click</button> <label>{{counter}}</label>
+        <p v-on:mousemove="updateCoordinates">
+            Coordinates: {{x}}/{{y}}
+            - <span v-on:mousemove.stop="">DEAD SPOT</span>
+        </p>
+    </div>
+    <script>
+        // You may of course also outsource this script code into a separate file (e.g. app.js) and simply import this file here
+        new Vue({
+            el: '#app',
+            data: {
+                greeting: 'Hello World!',
+                link: 'https://www.google.com',
+                dynamicLink: '<a href="https://www.facebook.com">Facebook</a>',
+                counter: 0,
+                x:0,
+                y:0
+            },
+            methods: {
+                changeGreeting: function (event) {
+                    this.greeting = event.target.value;
+                },
+                increase:function(step, event){
+                    this.counter += step;
+                },
+                updateCoordinates:function(event){
+                    this.x = event.clientX;
+                    this.y = event.clientY;
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

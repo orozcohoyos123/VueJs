@@ -1,0 +1,28 @@
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+
+<div id="app">
+  <p v-if="show">You can see me!</p> <!-- destroy the element if the confition is false -->
+  <p v-else>Also you can see me??</p> 
+  <template v-if="show"> <!-- template is not rendering in view -->
+    <h1>Header</h1>
+    <p>
+      Inside Template
+    </p>
+  </template>
+  <p v-show="show">Hidden Element</p> <!-- Only hiddes, performance is lower than v-if -->
+  <button @click="show = !show">Switch</button>
+</div>
+
+<script type="text/javascript">
+ new Vue({
+	el: '#app',
+  data: {
+    show: true
+  },
+  methods: {
+    switch: function(){
+      return this.show = !this.show
+    }
+  },
+});
+</script>
