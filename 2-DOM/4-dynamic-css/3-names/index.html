@@ -1,0 +1,35 @@
+<script src="vue.js"></script>
+<link rel="stylesheet" href="style.css" />
+
+<div id="app">
+  <div
+    class="demo"
+    @click="attachedRed = !attachedRed"
+    :class="cssClasses"
+  ></div>
+  <div
+    class="demo"
+    @click="attachedRed = !attachedRed"
+    :class="cssClasses"
+  ></div>
+  <div class="demo" :class="[color, {red: attachedRed}]"></div>
+  <input v-model="color" type="text" />
+</div>
+
+<script>
+  new Vue({
+    el: "#app",
+    data: {
+      attachedRed: false,
+      color: 'green',
+    },
+    computed: {
+      cssClasses: function () {
+        return {
+          red: this.attachedRed,
+          blue: !this.attachedRed,
+        };
+      },
+    },
+  });
+</script>
