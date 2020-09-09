@@ -40,14 +40,16 @@
                 <button id="attack" @click="action('attack', 'normal', 'monster')">ATTACK</button>
                 <button id="special-attack" @click="action('attack','special', 'monster')">SPECIAL ATTACK</button>
                 <button id="heal" @click="action('heal','', 'player')">HEAL</button>
-                <button id="give-up">GIVE UP</button>
+                <button id="give-up" @click="giveUp">GIVE UP</button>
             </div>
         </section>
         <section class="row log" v-if="playing && gameLog.length > 0">
             <div class="small-12 columns">
                 <ul>
-                    <li>
-
+                    <li v-for="log in gameLog" >
+                        <label >
+                            {{log.origin}} {{log.action}} {{log.destiny}} FOR {{log. value}}
+                        </label>
                     </li>
                 </ul>
             </div>
@@ -70,17 +72,33 @@
             }
         },
         watch: {
-           /*  playerColor: function () {
+            'gameVariables.playerWidth': function () {
+                var vm = this;
+                var value = +(vm.gameVariables.playerWidth.replace('%', ''));
+                vm.gameVariables.playerColor = value <= 25 ? 'red' : 'green';
 
+                if (value <= 0) {
+                    alert('Perdiste!');
+                    this.resetStats();
+                }
             },
-            monsterColor: function () {
+            'gameVariables.monsterWidth': function () {
+                var vm = this;
+                var value = +(vm.gameVariables.monsterWidth.replace('%', ''));
+                vm.gameVariables.monsterColor = value <= 25 ? 'red' : 'green';
 
-            }, */
+                if (value <= 0) {
+                    alert('Ganaste!');
+                    this.resetStats();
+                }
+            },
         },
         methods: {
             startGame: function () {
-                console.log('asl');
                 this.resetStats();
+            },
+            giveUp: function(){
+                vm.playing = false;
             },
             resetStats: function () {
                 vm = this;
@@ -95,29 +113,46 @@
             },
             action: function (action, type, destiny) {
                 var vm = this;
-                var maxValue = type == "special" ? 17 : 12; /// cambiar por un objeto para el valor minimo y maximo
+                var minMaxValue = type == "special" ? { min: 10, max: 17 } : { min: 1, max: 10 }; /// cambiar por un objeto para el valor minimo y maximo
                 var value = 0;
 
-                value = vm.getRandomValue(1, maxValue);
+                value = vm.getRandomValue(minMaxValue);
                 value = action == 'heal' ? value : value * -1;
 
                 if (destiny == 'player') {
                     vm.gameVariables.playerWidth = vm.applyStats(vm.gameVariables.playerWidth, value);
-                    if (action == 'heal') this.action('attack', 'normal', 'player');
+
+                    if (action == 'heal') {
+                        vm.feedLog('PLAYER', '', action.toUpperCase(), value, 'green');
+                        this.action('attack', 'normal', 'player');
+                    }
+                    else {
+                        vm.feedLog('MONSTER', 'PLAYER', action.toUpperCase(), value, 'red');
+                    }
                 }
                 else {
                     vm.gameVariables.monsterWidth = vm.applyStats(vm.gameVariables.monsterWidth, value);
+                    vm.feedLog('PLAYER', 'MONSTER', action.toUpperCase(), value, 'green');
                     this.action('attack', 'normal', 'player');
                 }
             },
-            getRandomValue: function (min, max) {
-                min = Math.ceil(min);
-                max = Math.floor(max);
+            getRandomValue: function (minMaxValue) {
+                min = Math.ceil(minMaxValue.min);
+                max = Math.floor(minMaxValue.max);
                 return Math.floor(Math.random() * (max - min + 1)) + min;
             },
-            applyStats: function(destiny, value){
+            applyStats: function (destiny, value) {
                 destiny = +(destiny.replace('%', '')) + value + '%';
                 return destiny
+            },
+            feedLog: function (origin, destiny, action, value, color) {
+                this.gameLog.push({
+                    origin: origin,
+                    destiny: destiny,
+                    action: action,
+                    value: Math.abs(value),
+                    color: color
+                });
             }
         },
     });
