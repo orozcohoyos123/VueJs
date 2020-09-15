@@ -146,7 +146,7 @@
                 return destiny
             },
             feedLog: function (origin, destiny, action, value, color) {
-                this.gameLog.push({
+                this.gameLog.unshift({
                     origin: origin,
                     destiny: destiny,
                     action: action,
