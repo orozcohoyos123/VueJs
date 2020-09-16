@@ -1,9 +1,6 @@
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 
 <div id="app">
-  <input type="text" v-model="element">
-  <button @click="ingredients.push(element)">Add</button>
-  <hr>
   <ul>
     <li v-for="(ingredient, i) in ingredients">
       {{ ingredient }} ({{ i }})
@@ -11,8 +8,8 @@
   </ul>
   <hr>
   <ul>
-    <li v-for="(person, i) in persons" :key="i">  <!-- key property its important for vue to make sure that takes the element itself to work with the array  -->
-      {{person.id}} - {{person.name}}             <!-- in case this property isnt in the element, vue only takes the array position to work with it -->
+    <li v-for="(person, i) in persons" :key="i">
+      {{person.id}} - {{person.name}}
     </li>
   </ul>
   <hr>
@@ -33,8 +30,7 @@
       persons: [
         { id: "1", name: "sebas" },
         { id: "2", name: "martin" }
-      ],
-      element: ''
+      ]
     }
   });
 </script>

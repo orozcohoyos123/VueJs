@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Monster Slayer</title>
+    <script src="https://npmcdn.com/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="css/foundation.min.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+
+<body>
+    <div id="app">
+        <section class="row">
+            <div class="small-6 columns">
+                <h1 class="text-center">YOU</h1>
+                <div class="healthbar">
+                    <div class="healthbar text-center" style="background-color: green; margin: 0; color: white;"
+                        :style="{'background-color': gameVariables.playerColor, width: gameVariables.playerWidth}">
+                        {{gameVariables.playerWidth}}
+                    </div>
+                </div>
+            </div>
+            <div class="small-6 columns">
+                <h1 class="text-center">MONSTER</h1>
+                <div class="healthbar">
+                    <div class="healthbar text-center" style="background-color: green; margin: 0; color: white;"
+                        :style="{'background-color': gameVariables.monsterColor, width: gameVariables.monsterWidth}">
+                        {{gameVariables.monsterWidth}}
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="row controls" v-if="!playing">
+            <div class="small-12 columns">
+                <button id="start-game" @click="startGame">START NEW GAME</button>
+            </div>
+        </section>
+        <section class="row controls" v-if="playing">
+            <div class="small-12 columns">
+                <button id="attack" @click="action('attack', 'normal', 'monster')">ATTACK</button>
+                <button id="special-attack" @click="action('attack','special', 'monster')">SPECIAL ATTACK</button>
+                <button id="heal" @click="action('heal','', 'player')">HEAL</button>
+                <button id="give-up" @click="giveUp">GIVE UP</button>
+            </div>
+        </section>
+        <section class="row log" v-if="playing && gameLog.length > 0">
+            <div class="small-12 columns">
+                <ul>
+                    <li v-for="log in gameLog" >
+                        <label >
+                            {{log.origin}} {{log.action}} {{log.destiny}} FOR {{log. value}}
+                        </label>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </div>
+</body>
+
+
+<script type="text/javascript">
+    new Vue({
+        el: '#app',
+        data: {
+            playing: false,
+            gameLog: [],
+            gameVariables: {
+                playerColor: 'green',
+                monsterColor: 'green',
+                playerWidth: '0%',
+                monsterWidth: '0%'
+            }
+        },
+        watch: {
+            'gameVariables.playerWidth': function () {
+                var vm = this;
+                var value = +(vm.gameVariables.playerWidth.replace('%', ''));
+                vm.gameVariables.playerColor = value <= 25 ? 'red' : 'green';
+
+                if (value <= 0) {
+                    alert('Perdiste!');
+                    this.resetStats();
+                }
+            },
+            'gameVariables.monsterWidth': function () {
+                var vm = this;
+                var value = +(vm.gameVariables.monsterWidth.replace('%', ''));
+                vm.gameVariables.monsterColor = value <= 25 ? 'red' : 'green';
+
+                if (value <= 0) {
+                    alert('Ganaste!');
+                    this.resetStats();
+                }
+            },
+        },
+        methods: {
+            startGame: function () {
+                this.resetStats();
+            },
+            giveUp: function(){
+                vm.playing = false;
+            },
+            resetStats: function () {
+                vm = this;
+                vm.playing = true;
+                vm.gameLog = [];
+                vm.gameVariables = {
+                    playerColor: 'green',
+                    monsterColor: 'green',
+                    playerWidth: '100%',
+                    monsterWidth: '100%'
+                }
+            },
+            action: function (action, type, destiny) {
+                var vm = this;
+                var minMaxValue = type == "special" ? { min: 10, max: 17 } : { min: 1, max: 10 }; /// cambiar por un objeto para el valor minimo y maximo
+                var value = 0;
+
+                value = vm.getRandomValue(minMaxValue);
+                value = action == 'heal' ? value : value * -1;
+
+                if (destiny == 'player') {
+                    vm.gameVariables.playerWidth = vm.applyStats(vm.gameVariables.playerWidth, value);
+
+                    if (action == 'heal') {
+                        vm.feedLog('PLAYER', '', action.toUpperCase(), value, 'green');
+                        this.action('attack', 'normal', 'player');
+                    }
+                    else {
+                        vm.feedLog('MONSTER', 'PLAYER', action.toUpperCase(), value, 'red');
+                    }
+                }
+                else {
+                    vm.gameVariables.monsterWidth = vm.applyStats(vm.gameVariables.monsterWidth, value);
+                    vm.feedLog('PLAYER', 'MONSTER', action.toUpperCase(), value, 'green');
+                    this.action('attack', 'normal', 'player');
+                }
+            },
+            getRandomValue: function (minMaxValue) {
+                min = Math.ceil(minMaxValue.min);
+                max = Math.floor(minMaxValue.max);
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            },
+            applyStats: function (destiny, value) {
+                destiny = +(destiny.replace('%', '')) + value + '%';
+                return destiny
+            },
+            feedLog: function (origin, destiny, action, value, color) {
+                this.gameLog.unshift({
+                    origin: origin,
+                    destiny: destiny,
+                    action: action,
+                    value: Math.abs(value),
+                    color: color
+                });
+            }
+        },
+    });
+</script>
+
+</html>

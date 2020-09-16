@@ -1,0 +1,25 @@
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+
+<div id="app">
+  <my-cmp></my-cmp>
+  <my-cmp></my-cmp>
+  <my-cmp></my-cmp>
+</div>
+
+<script type="text/javascript">
+  Vue.component('my-cmp', {
+    data: function () { // the data property has to be a function, to prevent manipulate data from other source when is invoqued with "this."
+      return { status: 'critical!' }
+    },
+    template: '<p>server status: {{ status }} (<button @click="changeStatus">Change</button>)</p>',
+    methods: {
+      changeStatus: function(){
+        this.status = "normal";
+      }
+    },
+  });
+
+  new Vue({
+    el: '#app'
+  });
+</script>
