@@ -12,7 +12,12 @@
 <script>
 //slots without name its a default slot
 export default {
-
+    deactivated() { // this event is triggered when the view is not visible, because another component is selected
+        console.log('deactivated');
+    },
+    activated() { // this event is triggered when the view is visible
+        console.log('activated');
+    },
 }
 </script>
 
