@@ -1,11 +1,16 @@
 <template>
 <div>
-    <slot></slot>
+    <div class="title">
+        <slot name="title"></slot>
+    </div>
+    <div>
+        <slot name="content"></slot>
+    </div>
 </div>
 </template>
 
 <script>
-//simple slot
+//separated slots
 export default {
 
 }
@@ -22,5 +27,10 @@ div {
 
 h2 {
     color: red;
+}
+
+.title {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-style: italic;
 }
 </style>
