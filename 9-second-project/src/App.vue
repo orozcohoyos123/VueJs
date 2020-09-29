@@ -28,6 +28,10 @@ export default {
     methods: {
         newQuote(quote) {
             if (quote != "") {
+                if(this.quotes.length >= this.maxQuotes){
+                    alert('please delete some quotes first!');
+                    return;
+                }
                 this.quotes.push(quote);
             }
         },
