@@ -8,22 +8,26 @@
                 <p>{{textMultipleFilters | toUppercase | toLowercase}}</p>
                 <input type="text" v-model="filterText">
                 <ul>
-                    <li v-for="fruit in filteredFruits" >{{fruit}}</li>
+                   <li v-for="(fruit, i) in filteredFruits" :key="i">{{fruit}}</li>
                 </ul>
+                <hr>
+                <app-list></app-list>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import {fruitMixin} from './fruitMixin';
+import List from './List.vue';
+
     export default {
-        data() {
+        mixins: [fruitMixin],
+        data() { 
             return {
                 text: 'local filter',
                 globalText: 'GLOBAL FILTER',
-                textMultipleFilters: 'Multiple filter text',
-                fruits: ["Banana", "Melon", "Apple", "Strawberry"],
-                filterText: ""
+                textMultipleFilters: 'Multiple filter text'
             }
         },
         filters: {
@@ -31,12 +35,8 @@
                 return value.toUpperCase();
             }
         },
-        computed:{
-            filteredFruits(){
-                return this.fruits.filter((elm) => {
-                    return elm.match(this.filterText);
-                });
-            }
+        components: {
+            appList: List
         }
     }
 </script>
